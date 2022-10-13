@@ -20,19 +20,24 @@ class ListTransactions(APIView):
         print(serializer.errors)
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
+class GetBalance(APIView):
+
+    def get(self, request, format=None):
+        pass
+
 class SpendPoints(APIView):
 
     def spend_points(self, points, pk=1):
         get_points = Transaction.objects.get(pk=pk)
         points_spent: int = points
         if int(points_spent) > get_points.points:
-            points_spent = int(points_spent) - get_points.points
-            get_points.points = 0
-            get_points.save()
-            if not pk:
-                serializer = TransactionSerializer(get_points)
-                return Response(serializer.data)
-            return SpendPoints.spend_points(self, points=points_spent, pk=pk+1)
+            if Transaction.objects.filter(pk=pk+1).exists():
+                points_spent = int(points_spent) - get_points.points
+                get_points.points = 0
+                get_points.save()
+                return SpendPoints.spend_points(self, points=points_spent, pk=pk+1)
+            serializer = TransactionSerializer(get_points)
+            return Response(serializer.data)
         get_points.points -= int(points_spent)
         get_points.save()
         serializer = TransactionSerializer(get_points)
@@ -41,5 +46,4 @@ class SpendPoints(APIView):
 
     def post(self, request, format=None):
         point_spent = request.data["points"]
-
         return self.spend_points(point_spent)

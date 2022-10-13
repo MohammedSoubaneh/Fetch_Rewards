@@ -34,6 +34,7 @@ class TransactionTest(TestCase):
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, 200)
 
+
     def test_post_transaction(self):
         response = self.client.post(self.url, self.data, format="json")
         self.assertEqual(response.status_code, 201)
@@ -45,6 +46,7 @@ class TransactionTest(TestCase):
         self.client.post(self.url, self.data, format="json")
         self.client.post(self.spend_points_url, spend_points_data, format="json")
         response = self.client.get(self.list_url, format="json")
+        print(json.loads(response.content))
         self.assertEqual(json.loads(response.content)[0]["points"], 0)
 
 
@@ -58,3 +60,24 @@ class TransactionTest(TestCase):
         response = self.client.get(self.list_url, format="json")
         self.assertEqual(json.loads(response.content)[0]["points"], 0)
         self.assertEqual(json.loads(response.content)[1]["points"], 2300)
+
+    def test_points_delete_if_it_reaches_zero(self):
+
+        data_zero_points = {
+            "user": 1,
+            "payer": "Joey",
+            "points": 0,
+        }
+
+        spend_points_two = {
+            "points": 4000
+        }
+        self.client.post(self.url, data_zero_points, format="json")
+        self.client.post(self.url, self.data_two, format="json")
+        self.client.post(self.spend_points_url, spend_points_two, format="json")
+        response = self.client.get(self.list_url, format="json")
+        self.assertEqual(json.loads(response.content)[0]["points"], 0)
+        self.assertEqual(json.loads(response.content)[1]["points"], 2000)  
+
+    def test_get_balance(self):
+         pass
