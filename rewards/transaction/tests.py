@@ -46,7 +46,6 @@ class TransactionTest(TestCase):
         self.client.post(self.url, self.data, format="json")
         self.client.post(self.spend_points_url, spend_points_data, format="json")
         response = self.client.get(self.list_url, format="json")
-        print(json.loads(response.content))
         self.assertEqual(json.loads(response.content)[0]["points"], 0)
 
 
@@ -78,6 +77,3 @@ class TransactionTest(TestCase):
         response = self.client.get(self.list_url, format="json")
         self.assertEqual(json.loads(response.content)[0]["points"], 0)
         self.assertEqual(json.loads(response.content)[1]["points"], 2000)  
-
-    def test_get_balance(self):
-         pass

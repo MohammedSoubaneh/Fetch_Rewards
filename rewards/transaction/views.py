@@ -20,10 +20,6 @@ class ListTransactions(APIView):
         print(serializer.errors)
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
-class GetBalance(APIView):
-
-    def get(self, request, format=None):
-        pass
 
 class SpendPoints(APIView):
 
