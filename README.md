@@ -23,6 +23,7 @@ Rules when spending points:
 ## Architechure
 
 High view:
+![Fetch-Rewards](https://ibb.co/pJC6TXh)
 
 Models:
 
